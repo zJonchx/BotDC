@@ -8,7 +8,7 @@ from threading import Thread
 from random import randint
 
 # Reemplaza 'TU_TOKEN_AQUÍ' con el token de tu bot de Discord
-TOKEN = 'MTM3ODA4MjUxNjMyMTE3NzY2MQ.G254Zc.lQI_PQYR07wuVEOgBIC7cH6fMcIthV8I1eEQj8'
+TOKEN = 'MTM3ODA4MjUxNjMyMTE3NzY2MQ.GKKab9.flDUBw5rR7YbUSporNwaQaVueZxLDKOovpaXBk'
 
 intents = discord.Intents.default()
 intents.message_content = True
