@@ -27,7 +27,7 @@ async def ayuda(ctx):
         "- `!methods`"
     )
     # Ruta a la imagen local que deseas enviar
-    image_path = '/data/data/com.termux/files/home/storage/pictures/anime-demon-pictures-ydwfrvu4ub9662i0.jpg'
+    image_path = '/project/workspace/BotDC/anime-demon-pictures-ydwfrvu4ub9662i0.jpg'
     await ctx.send(content=help_text, file=discord.File(image_path))
 
 @bot.command(name='methods')
