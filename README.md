@@ -1,2 +1,2 @@
 # BotDC
-Bot de DDoS Layer4 en Discord
+Bot de DDoS Layer7 en Discord
