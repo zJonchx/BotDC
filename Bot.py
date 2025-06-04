@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import threading
 import time
+import asyncio
 import os
 
 from utils import check_cooldown
