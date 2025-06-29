@@ -50,6 +50,10 @@ async def methods_cmd(ctx):
     embed = make_embed(
         "⚙️ Methods AMP's",
         """```css
+FREE:
+- udppps <ip> <port> <time> <threads>
+- udpdown <ip> <port> <time>
+- udpflood <ip> <port> <time>
 VIP:
 
 - dnsflood <ip> <port> <time>
