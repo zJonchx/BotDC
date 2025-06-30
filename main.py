@@ -48,18 +48,19 @@ async def ayuda_cmd(ctx):
 @bot.command(name='methods')
 async def methods_cmd(ctx):
     embed = make_embed(
-        "⚙️ Methods AMP's",
+        "⚙️ Methods",
         """```css
 FREE:
 - udppps <ip> <port> <time> <threads>
 - udpdown <ip> <port> <time>
 - udpflood <ip> <port> <time>
+
 VIP:
 
 - dnsflood <ip> <port> <time>
 - ntpflood <ip> <port> <time>
 
-AMP's:
+VIP AMP's:
 - dns-amp <ip> <port> <time>
 - ntp-amp <ip> <port> <time>
 - mix-amp <ip> <port> <time>
