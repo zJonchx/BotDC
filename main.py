@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import requests
 import os
 
 from config import OWNER_ID, IMAGE_URLS
@@ -40,6 +41,7 @@ async def ayuda_cmd(ctx):
 !defuser <id>     → VIPs
 !stop             → Detiene todos los ataques
 !info             → Info bot
+!geoip            → Info IP
 ```""",
         IMAGE_URLS["help"]
     )
@@ -205,6 +207,36 @@ async def udpflood_cmd(ctx, ip: str, port: int, duration: int):
     start_attack("udpflood", ip, port, duration, on_finish=lambda: bot.loop.create_task(notify_end()))
     embed = make_embed("💥 UDPFlood iniciado", f"Objetivo: `{ip}:{port}`\nDuración: `{duration}s`", IMAGE_URLS["free"])
     await ctx.send(embed=embed)
+
+@bot.command(name='geoip')
+async def geoip_cmd(ctx, ip: str):
+    try:
+        response = requests.get(f"http://ip-api.com/json/{ip}").json()
+
+        if response["status"] != "success":
+            await ctx.send("No se pudo obtener información de esa IP")
+            return
+
+        embed = discord.Embed(
+            title="🌍 Información de la IP",
+            description=f"""```yaml
+IP:        {response['query']}
+País:      {response['country']} ({response['countryCode']})
+Ciudad:    {response['city']}
+Región:    {response['regionName']}
+ISP:       {response['isp']}
+Org:       {response['org']}
+ASN:       {response['as']}
+Lat/Lon:   {response['lat']}, {response['lon']}
+Zona:      {response['timezone']}
+```""",
+            color=discord.Color.green()
+        )
+        embed.set_footer(text="Bot hecho por zJonch")
+        await ctx.send(embed=embed)
+
+    except Exception as e:
+        await ctx.send(f"Error al consultar la IP: `{str(e)}`")
     
 # Ejecutar el bot
 bot.run(token)
