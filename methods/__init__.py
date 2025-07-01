@@ -1,5 +1,5 @@
 import threading
-from methods import dns, ntp, amp_dns, amp_ntp, amp_mix, amp_ovh, udppps, udpdown, udpflood
+from methods import dns, ntp, amp_dns, amp_ntp, amp_mix, amp_ovh, udppps, udpdown, udpflood, destroy
 
 attack_thread = None
 stop_event = threading.Event()
@@ -18,6 +18,7 @@ def start_attack(method, ip, port, duration, on_finish=None):
         "udppps": udppps.run,
         "udpdown": udpdown.run,
         "udpflood": udpflood.run,
+        "destroy": destroy.run,
     }
 
     def run_with_callback():
