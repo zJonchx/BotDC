@@ -57,6 +57,7 @@ FREE:
 - udppps <ip> <port> <time> <threads>
 - udpdown <ip> <port> <time>
 - udpflood <ip> <port> <time>
+- destroy <ip> <port> <time>
 
 VIP:
 
