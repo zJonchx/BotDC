@@ -2,7 +2,7 @@ import socket
 import random
 import time
 
-def destroy(ip, port, duration, stop_event):
+def destroy_flood(ip, port, duration, stop_event):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     end_time = time.time() + duration
     try:
