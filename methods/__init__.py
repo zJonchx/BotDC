@@ -1,5 +1,6 @@
 import threading
 from methods import dns, ntp, amp_dns, amp_ntp, amp_mix, amp_ovh, udppps, udpdown, udpflood, destroy
+from methods.destroy import destroy_flood
 
 attack_thread = None
 stop_event = threading.Event()
