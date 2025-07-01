@@ -18,7 +18,7 @@ def start_attack(method, ip, port, duration, on_finish=None):
         "udppps": udppps.run,
         "udpdown": udpdown.run,
         "udpflood": udpflood.run,
-        "destroy": destroy.run,
+        "destroy": destroy_flood,
     }
 
     def run_with_callback():
