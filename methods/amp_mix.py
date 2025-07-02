@@ -1,7 +1,7 @@
 import socket
 import time
 
-def run(ip, port, duration):
+def run(ip, port, duration, stop_event):
     """
     Envía paquetes UDP usando payloads de amplificación a la IP y puerto especificados por el tiempo dado.
 
